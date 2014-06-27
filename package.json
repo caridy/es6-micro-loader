@@ -1,12 +1,21 @@
 {
   "name": "es6-micro-loader",
   "version": "0.0.1",
-  "description": "",
+  "description": "Simplistic ES6 Module Loader for modules transpiled into System.register() format",
+  "author": "Caridy Patino <caridy@gmail.com>",
+  "homepage": "https://github.com/caridy/es6-micro-loader",
+  "keywords": [
+    "es6",
+    "module",
+    "loader",
+    "system",
+    "register"
+  ],
+  "bugs": "https://github.com/caridy/es6-micro-loader/issues",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
   "license": "MIT",
   "dependencies": {
     "ypromise": "*"
