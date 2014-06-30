@@ -7,14 +7,11 @@ ES6 System Loader Polyfill
 
 This package implements two versions of the `System` polyfill, one for the browser, and another for nodejs. The reason why we call this a micro loader is because it sides with the developers, implementing only a very tiny part of the specs to maintain the semantic of the ES modules. It does NOT provide any feature related to the network activity, or loading infrastructure, it assumes all modules are loaded somehow, right after including the polyfill in the page, or requiring it on nodejs.
 
-If you're looking for a full implementation of the ES6 Loader specs, you should check [SystemJS][] instead. Modules transpiled into `System.register()` using [es6-module-transpiler-system-formatter][] or [traceur][] should work fine with both implementations.
+If you're looking for a full implementation of the ES6 Loader specs, you should check [SystemJS][] instead. Modules transpiled into `System.register()` using [es6-module-transpiler-system-formatter][] or [traceur-compiler][] should work fine with both implementations.
 
-The browser version of the loader is meant to be used in two different escenarios:
+The browser version of the loader is meant to be used to call `System.import()` to access ES6 modules included in the page after transpiling them into `System.register('module-name')` form.
 
-* to call `System.import()` to access ES6 modules included in the page after transpiling them into `System.register()` form.
-* to be wrapped in an anonymous function, along with transpiled modules to build libraries, or components that rely on ES6 modules under the hood.
-
-The nodejs version of the loader is meant to be used to load ES6 modules by calling `System.import('path/to/module')` after transpiling the modules into `System.register()` form. You could do the same by transpiling the modules into CommonJS using [es6-module-tranpiler][] and using `require('path/to/module')`, although, if you plan to re-use those modules on the client side as well, compiling into two different formats is not ideal. We also plan to provide better performance than what you can get when using CommonJS as the output, due to the nature of the live bindings for ES6 Modules.
+While the nodejs version of the loader is meant to be used to load ES6 modules by calling `System.import('path/to/module-name')` after transpiling the modules into `System.register()` form. You could do the same by transpiling the modules into CommonJS using [es6-module-transpiler][] and using `require('path/to/module')`, although, if you plan to re-use those modules on the client side as well, compiling into two different formats is not ideal. We also plan to provide better performance than what you can get when using CommonJS as the output, due to the nature of the live bindings for ES6 Modules.
 
 [es6-module-transpiler-system-formatter]: https://github.com/caridy/es6-module-transpiler-system-formatter
 [SystemJS]: https://github.com/systemjs/systemjs

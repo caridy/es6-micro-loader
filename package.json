@@ -14,7 +14,10 @@
   "bugs": "https://github.com/caridy/es6-micro-loader/issues",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "benchmark-compile-cjs": "cd tests/benchmark/src/; compile-modules convert -f commonjs *.js -o ../cjs",
+    "benchmark-compile-system": "cd tests/benchmark/src/; compile-modules convert -f /Users/caridy/repo/es6-micro-loader/node_modules/es6-module-transpiler-system-formatter *.js -o ../system",
+    "benchmark": "node tests/benchmark/cjs-vs-system.js"
   },
   "license": "MIT",
   "dependencies": {
@@ -22,6 +25,9 @@
   },
   "devDependencies": {
     "grunt": "^0.4.5",
-    "grunt-cli": "0.1.*"
+    "grunt-cli": "0.1.*",
+    "es6-module-transpiler": "^0.5.1",
+    "benchmark": "^1.0.0",
+    "es6-module-transpiler-system-formatter": "0.0.1"
   }
 }
