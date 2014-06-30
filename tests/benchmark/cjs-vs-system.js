@@ -1,8 +1,8 @@
 var Benchmark = require("benchmark");
-var System = require("../../");
+var System = require("../../");  // es6-micro-loader
 var cjsMod = require("./cjs/main");
 
-System.import("./tests/benchmark/system/main").then(function (systemMod) {
+System.import("tests/benchmark/system/main").then(function (systemMod) {
 
     var suite = new Benchmark.Suite(),
         a = 0, aFn = cjsMod.checkForOdd,
