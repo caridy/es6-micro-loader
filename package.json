@@ -16,8 +16,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "benchmark-compile-cjs": "cd tests/benchmark/src/; ../../../node_modules/.bin/compile-modules convert -f commonjs *.js -o ../cjs",
+    "benchmark-compile-bundle": "cd tests/benchmark/src/; ../../../node_modules/.bin/compile-modules convert -f bundle *.js -o ../bundle/index.js",
     "benchmark-compile-system": "cd tests/benchmark/src/; ../../../node_modules/.bin/compile-modules convert -f es6-module-transpiler-system-formatter *.js -o ../system",
-    "benchmark": "npm run benchmark-compile-cjs; npm run benchmark-compile-system; node tests/benchmark/cjs-vs-system.js"
+    "benchmark": "npm run benchmark-compile-cjs; npm run benchmark-compile-system; node tests/benchmark/cjs-vs-system.js",
+    "benchmark2": "npm run benchmark-compile-bundle; npm run benchmark-compile-system; node tests/benchmark/bundle-vs-system.js"
   },
   "license": "MIT",
   "dependencies": {
