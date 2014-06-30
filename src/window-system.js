@@ -78,6 +78,9 @@ window.System = (function () {
   return {
     get: get,
     register: register,
+    has: function (name) {
+      return !!registry[name];
+    },
     import: function(name) {
       return new Promise(function (resolve, reject) {
         var mod = get(normalizeName(name, []));
