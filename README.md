@@ -24,7 +24,47 @@ This format is experimental, and it is a living creature, we will continue to tw
 
 ## Usage
 
-TBD
+### In a browser
+
+Install the npm package, and include `node_modules/es6-micro-loader/src/window-system.js` at the top of your pages, whether it's inline or by reference, or by a build process, that's entirely your choice.
+
+Once `System` is available in a page, you can load the transpiled modules, where no order is required. E.g.:
+
+```html
+<script src="path/to/window-loader.js"></script>
+<script src="path/to/named/foo.js"></script>
+<script src="path/to/named/bar.js"></script>
+<script src="path/to/named/baz.js"></script>
+```
+
+then you can simply use the imperative form to import any of the available modules, e.g:
+
+```javascript
+System.has('named/foo'); // -> true
+System.has('named/wrong'); // -> false
+System.import('named/foo').then(function (foo) {
+  foo.init(); // do something
+}).catch(function (err) {
+  console.log(err);
+});
+```
+
+### In nodejs
+
+Install the npm package that extends nodejs to support `System`.
+
+```
+npm install es6-micro-loader --save
+```
+
+Require the microloader whenever you plan to invoke `System.import()`, `System.get()` or `System.has()`:
+
+```javascript
+var System = require('es6-micro-loader');
+System.import("global/path/to/module");
+```
+
+The small detail here is the difference between a relative path, which is the one used when invoking `require()` in nodejs, and the global path to the module, which is what `System.import()` is expecting. So, what is the "global/path/to/module" then? it is effectible a relative path from the root of the application (aka `process.env.PWD`) to the file in question. If you build a file into `build/foo.js`, then you use `build/foo` from any script in your application, independently of the `__dirname` of the file from where you want to import `foo`.
 
 ## Contributing
 

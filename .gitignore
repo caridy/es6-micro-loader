@@ -3,3 +3,4 @@ dist
 tests/benchmark/cjs
 tests/benchmark/system
 tests/benchmark/bundle
+tests/unit/build
