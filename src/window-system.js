@@ -72,6 +72,7 @@ window.System = (function () {
           }
         });
       }
+      return value;
     });
   }
 
