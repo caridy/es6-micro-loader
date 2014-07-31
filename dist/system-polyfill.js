@@ -24,6 +24,7 @@ function normalizeName(child, parentBase) {
 var seen = Object.create(null);
 var internalRegistry = Object.create(null);
 var externalRegistry = Object.create(null);
+var anonymousEntry;
 
 function ensuredExecute(name) {
     var mod = internalRegistry[name];
@@ -71,6 +72,10 @@ function createScriptNode(src, callback) {
 function load(name) {
     return new Promise(function(resolve, reject) {
         createScriptNode((System.baseURL || '/') + name + '.js', function(err) {
+            if (anonymousEntry) {
+                System.register(name, anonymousEntry[0], anonymousEntry[1]);
+                anonymousEntry = undefined;
+            }
             var mod = internalRegistry[name];
             if (!mod) {
                 reject(new Error("Error loading module " + name));
@@ -87,8 +92,7 @@ function load(name) {
 }
 
 
-// exporting the System object
-exports.System = {
+var System = {
     set: set,
     get: get,
     has: has,
@@ -102,6 +106,12 @@ exports.System = {
         });
     },
     register: function(name, deps, wrapper) {
+        if (Array.isArray(name)) {
+            // anounymous module
+            anonymousEntry = [];
+            anonymousEntry.push.apply(anonymousEntry, arguments);
+            return; // breaking to let the script tag to name it.
+        }
         var proxy = Object.create(null),
             values = Object.create(null),
             mod, meta;
@@ -159,5 +169,8 @@ exports.System = {
         });
     }
 };
+
+// exporting the System object
+exports.System = System;
 
 })(window);
