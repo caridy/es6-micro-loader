@@ -1,5 +1,4 @@
 node_modules
-dist
 tests/benchmark/cjs
 tests/benchmark/system
 tests/benchmark/bundle
