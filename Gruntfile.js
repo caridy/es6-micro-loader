@@ -11,7 +11,7 @@ module.exports = function (grunt) {
             dist: {
                 files: [
                     {
-                        'dist/loader.js': ['client.js']
+                        'dist/system-polyfill.js': ['client.js']
                     }
                 ]
             }
@@ -20,7 +20,7 @@ module.exports = function (grunt) {
             dist: {
                 files: [
                     {
-                        'dist/loader.min.js': ['dist/loader.js']
+                        'dist/system-polyfill.min.js': ['dist/system-polyfill.js']
                     }
                 ]
             }
