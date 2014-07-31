@@ -1,6 +1,6 @@
 {
   "name": "es6-micro-loader",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Simplistic ES6 Module Loader for modules transpiled into System.register() format",
   "author": "Caridy Patino <caridy@gmail.com>",
   "homepage": "https://github.com/caridy/es6-micro-loader",
