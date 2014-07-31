@@ -31,7 +31,7 @@ Install the npm package, and include `node_modules/es6-micro-loader/src/window-s
 Once `System` is available in a page, you can load the transpiled modules, where no order is required. E.g.:
 
 ```html
-<script src="path/to/window-loader.js"></script>
+<script src="path/to/es6-micro-loader/dist/loader.js"></script>
 <script src="path/to/named/foo.js"></script>
 <script src="path/to/named/bar.js"></script>
 <script src="path/to/named/baz.js"></script>
