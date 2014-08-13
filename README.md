@@ -5,7 +5,7 @@ ES6 System Loader Polyfill
 
 ## Overview
 
-This package implements a `System` polyfill that works on a browser, and in nodejs. The reason why we call this a micro loader is because it sides with the developers, implementing only a very tiny part of the specs to maintain the semantic of the ES modules. It does NOT provide any feature related to the network activity, or loading infrastructure, it assumes all modules available locally somehow, right after including the polyfill in the page.
+This package implements a `System` polyfill that works on a browser, and in nodejs. The reason why we call this a micro loader is because it sides with the developers, implementing only a very tiny part of the specs to maintain the semantic of the ES modules.
 
 If you're looking for a full implementation of the ES6 Loader specs, you should check [SystemJS][] instead. Modules transpiled into `System.register()` using [es6-module-transpiler-system-formatter][] or [traceur-compiler][] should work fine with both implementations.
 
@@ -20,6 +20,8 @@ This format is experimental, and it is a living creature, we will continue to tw
 ### In a browser
 
 The browser polyfill for `System` is available in this package in `dist/system-polyfill.js` and the corresponding minified version of it. This polyfill has to be included in the page before calling `System.import()` and before loading any transpiled module.
+
+_note: it provides basic network fetching mechanism to fetch modules using `script` tags by relying on `System.baseURL` configuration, which defaults to `/`, to construct the url to fetch the transpiled script in a non-blocking fashion. recommendation is to have all modules available locally somehow, right after including the polyfill in the page and not rely on the basic fetching routine that this polyfill provides.
 
 _note: you might also need to load a Promise polyfill. we recommend to use `es6-promise` or `bluebird`._
 
