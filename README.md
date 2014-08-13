@@ -5,18 +5,11 @@ ES6 System Loader Polyfill
 
 ## Overview
 
-This package implements two versions of the `System` polyfill, one for the browser, and another for nodejs. The reason why we call this a micro loader is because it sides with the developers, implementing only a very tiny part of the specs to maintain the semantic of the ES modules. It does NOT provide any feature related to the network activity, or loading infrastructure, it assumes all modules are loaded somehow, right after including the polyfill in the page, or requiring it on nodejs.
+This package implements a `System` polyfill that works on a browser, and in nodejs. The reason why we call this a micro loader is because it sides with the developers, implementing only a very tiny part of the specs to maintain the semantic of the ES modules. It does NOT provide any feature related to the network activity, or loading infrastructure, it assumes all modules available locally somehow, right after including the polyfill in the page.
 
 If you're looking for a full implementation of the ES6 Loader specs, you should check [SystemJS][] instead. Modules transpiled into `System.register()` using [es6-module-transpiler-system-formatter][] or [traceur-compiler][] should work fine with both implementations.
 
-The browser version of the loader is meant to be used to call `System.import()` to access ES6 modules included in the page after transpiling them into `System.register('module-name')` form.
-
-While the nodejs version of the loader is meant to be used to load ES6 modules by calling `System.import('path/to/module-name')` after transpiling the modules into `System.register()` form. You could do the same by transpiling the modules into CommonJS using [es6-module-transpiler][] and using `require('path/to/module')`, although, if you plan to re-use those modules on the client side as well, compiling into two different formats is not ideal. We also plan to provide better performance than what you can get when using CommonJS as the output, due to the nature of the live bindings for ES6 Modules.
-
-[es6-module-transpiler-system-formatter]: https://github.com/caridy/es6-module-transpiler-system-formatter
-[SystemJS]: https://github.com/systemjs/systemjs
-[es6-module-transpiler]: https://github.com/square/es6-module-transpiler
-[traceur-compiler]: https://github.com/google/traceur-compiler
+The browser version of the loader is meant to be used to call `System.import('module-name')` to access ES6 modules included in the page after loading the transpiled modules using script tags. While, the nodejs version, is meant to be used by calling `System.import('path/to/module-name')`.
 
 ## Disclaimer
 
@@ -26,12 +19,14 @@ This format is experimental, and it is a living creature, we will continue to tw
 
 ### In a browser
 
-Install the npm package, and include `node_modules/es6-micro-loader/src/window-system.js` at the top of your pages, whether it's inline or by reference, or by a build process, that's entirely your choice.
+The browser polyfill for `System` is available in this package in `dist/system-polyfill.js` and the corresponding minified version of it. This polyfill has to be included in the page before calling `System.import()` and before loading any transpiled module.
+
+_note: you might also need to load a Promise polyfill. we recommend to use `es6-promise` or `bluebird`._
 
 Once `System` is available in a page, you can load the transpiled modules, where no order is required. E.g.:
 
 ```html
-<script src="path/to/es6-micro-loader/dist/loader.js"></script>
+<script src="path/to/dist/system-polyfill.min.js"></script>
 <script src="path/to/named/foo.js"></script>
 <script src="path/to/named/bar.js"></script>
 <script src="path/to/named/baz.js"></script>
@@ -51,20 +46,50 @@ System.import('named/foo').then(function (foo) {
 
 ### In nodejs
 
-Install the npm package that extends nodejs to support `System`.
+Install the npm package to access the `System` polyfill:
 
 ```
 npm install es6-micro-loader --save
 ```
 
-Require the microloader whenever you plan to invoke `System.import()`, `System.get()` or `System.has()`:
+This package exports the `System` polyfill, so you can invoke `System.import()`, `System.get()` or `System.has()`:
 
 ```javascript
 var System = require('es6-micro-loader');
 System.import("global/path/to/module");
 ```
 
-The small detail here is the difference between a relative path, which is the one used when invoking `require()` in nodejs, and the global path to the module, which is what `System.import()` is expecting. So, what is the "global/path/to/module" then? it is effectible a relative path from the root of the application (aka `process.env.PWD`) to the file in question. If you build a file into `build/foo.js`, then you use `build/foo` from any script in your application, independently of the `__dirname` of the file from where you want to import `foo`.
+_note: the difference between a relative path, which is used when using `require()` in nodejs, and the global path to the module, which is what `System.import()` is expecting, is important. what is the "global/path/to/module" in the previous example? it is effectible the path from the root of the application (aka `process.env.PWD`) to the file in question. If you build a file into `build/foo.js`, then you use `build/foo` from any script in your application, independently of the `__dirname` or `__filename` from where you want to import `foo`._
+
+
+# Benchmark
+
+For the server side, you could do the same by transpiling the modules into CommonJS using [es6-module-transpiler][] and using `require('./path/to/module-name')`, and even try to use them thru [browserify], although, `System.register()` form provides order of magnituds better performance than CommonJS  output, due to the nature of the live bindings in ES6 Modules. You can run benchmark tests in this project:
+
+```bash
+git clone https://github.com/caridy/es6-micro-loader.git
+cd es6-micro-loader
+npm install
+npm run benchmark
+```
+
+Benchmark results on the latest version:
+
+```bash
+cjs x 2,847,803 ops/sec ±0.90% (92 runs sampled)
+system x 39,078,259 ops/sec ±0.78% (94 runs sampled)
+bundle x 50,916,706 ops/sec ±1.21% (82 runs sampled)
+Fastest is bundle
+```
+
+You can look into the benchmark code here: https://github.com/caridy/es6-micro-loader/tree/master/tests/benchmark
+
+[es6-module-transpiler-system-formatter]: https://github.com/caridy/es6-module-transpiler-system-formatter
+[SystemJS]: https://github.com/systemjs/systemjs
+[es6-module-transpiler]: https://github.com/square/es6-module-transpiler
+[traceur-compiler]: https://github.com/google/traceur-compiler
+[browserify]: http://browserify.org/
+
 
 ## Contributing
 

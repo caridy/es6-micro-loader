@@ -34,7 +34,7 @@ exports.System = {
   has: has,
   import: function(name) {
     return new Promise(function (resolve, reject) {
-      var mod = require(path.resolve(name));
+      var mod = patchedRequire(path.resolve(name));
       return mod ? resolve(mod) : reject(new Error("Could not find module " + name));
     });
   },
@@ -75,65 +75,72 @@ exports.System = {
 
 
 
-// monkey patching `require()`
 var newEntry;
 var m = require("module");
 var Module = require("module").Module;
 var originalLoader = require("module")._load;
-m._load = function hookedLoader(request, parent, isMain) {
-  var values, filename, cachedModule, metaModule, esModule;
-  newEntry = undefined;
-  values = originalLoader.apply(this, arguments);
-  if (newEntry) {
-    filename = Module._resolveFilename(request, parent);
-    cachedModule = Module._cache[filename];
-    if (cachedModule && !cachedModule._esModule) {
-      cachedModule._esModule = esModule = newEntry;
-      esModule.address = filename;
-      esModule.basePath = request.slice(0, -esModule.name.length);
-      esModule.parent = parent;
-      // collecting execute() and setters[]
-      metaModule = esModule.execute(function(identifier, value) {
-        values[identifier] = value;
-        esModule.lock = true; // locking down the updates on the module to avoid infinite loop
-        esModule.dependants.forEach(function(dependant) {
-          if (!dependant.lock) {
-            dependant.update(esModule.name, values);
-          }
-        });
-        esModule.lock = false;
-        if (!Object.getOwnPropertyDescriptor(esModule.proxy, identifier)) {
-          Object.defineProperty(esModule.proxy, identifier, {
-            enumerable: true,
-            get: function() {
-              return values[identifier];
+
+// monkey patching `require()` during a brief period of time
+function patchedRequire(name) {
+  m._load = function patchedLoader(request, parent, isMain) {
+    var values, filename, cachedModule, metaModule, esModule;
+    newEntry = undefined;
+    values = originalLoader.apply(this, arguments);
+    if (newEntry) {
+      filename = Module._resolveFilename(request, parent);
+      cachedModule = Module._cache[filename];
+      if (cachedModule && !cachedModule._esModule) {
+        cachedModule._esModule = esModule = newEntry;
+        esModule.address = filename;
+        esModule.basePath = request.slice(0, -esModule.name.length);
+        esModule.parent = parent;
+        // collecting execute() and setters[]
+        metaModule = esModule.execute(function(identifier, value) {
+          values[identifier] = value;
+          esModule.lock = true; // locking down the updates on the module to avoid infinite loop
+          esModule.dependants.forEach(function(dependant) {
+            if (!dependant.lock) {
+              dependant.update(esModule.name, values);
             }
           });
-        }
-        return value;
-      });
-      esModule.setters = metaModule.setters;
-      esModule.deps.forEach(function(dep) {
-        var imports = externalRegistry[dep],
-          depRequest, depFilename, depModule;
-        if (!imports) {
-          if (~esModule.externalDeps.indexOf(dep)) {
-            imports = require(Module._resolveFilename(dep, cachedModule));
-          } else {
-            depRequest = path.resolve(path.join(esModule.basePath, dep));
-            imports = require(depRequest);
-            depFilename = Module._resolveFilename(depRequest, cachedModule);
-            depModule = Module._cache[depFilename]._esModule;
-            if (depModule) {
-              depModule.dependants.push(esModule);
+          esModule.lock = false;
+          if (!Object.getOwnPropertyDescriptor(esModule.proxy, identifier)) {
+            Object.defineProperty(esModule.proxy, identifier, {
+              enumerable: true,
+              get: function() {
+                return values[identifier];
+              }
+            });
+          }
+          return value;
+        });
+        esModule.setters = metaModule.setters;
+        esModule.deps.forEach(function(dep) {
+          var imports = externalRegistry[dep],
+            depRequest, depFilename, depModule;
+          if (!imports) {
+            if (~esModule.externalDeps.indexOf(dep)) {
+              imports = require(Module._resolveFilename(dep, cachedModule));
+            } else {
+              depRequest = path.resolve(path.join(esModule.basePath, dep));
+              imports = require(depRequest);
+              depFilename = Module._resolveFilename(depRequest, cachedModule);
+              depModule = Module._cache[depFilename]._esModule;
+              if (depModule) {
+                depModule.dependants.push(esModule);
+              }
             }
           }
-        }
-        esModule.update(dep, imports);
-      });
-      // executing the module body
-      metaModule.execute();
+          esModule.update(dep, imports);
+        });
+        // executing the module body
+        metaModule.execute();
+      }
     }
-  }
-  return values;
-};
+    return values;
+  };
+  var mod = require(name);
+  // removing the patch
+  m._load = originalLoader;
+  return mod;
+}

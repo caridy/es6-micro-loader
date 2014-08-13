@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>using System polyfill thru micro-loader</title>
+</head>
+<body>
+
+  <div id="output">Look at the browser's console for details.</div>
+
+  <script src="../../dist/system-polyfill.js"></script>
+  <script src="build/others/evens.js"></script>
+  <script src="build/others/odds.js"></script>
+  <script src="build/live/a.js"></script>
+  <script src="build/live/b.js"></script>
+  <script src="build/live/c.js"></script>
+  <script>
+  System.import('others/odds').then(function (mod) {
+    console.log('is 0 even? ' + mod.isOdd(0));
+    console.log('is 1 even? ' + mod.isOdd(1));
+    console.log('is 2 even? ' + mod.isOdd(2));
+    console.log('is 3 even? ' + mod.isOdd(3));
+  }).catch(function (e) {
+    console.log('Error: ', e);
+  });
+  </script>
+
+</body>
+<html>
