@@ -1,24 +1,28 @@
 (function(exports) {
 
-"use strict";
+'use strict';
 
 var headEl = document.getElementsByTagName('head')[0],
     ie = /MSIE/.test(navigator.userAgent);
 
+/*
+  normalizeName() is inspired by Ember's loader:
+  https://github.com/emberjs/ember.js/blob/0591740685ee2c444f2cfdbcebad0bebd89d1303/packages/loader/lib/main.js#L39-L53
+ */
 function normalizeName(child, parentBase) {
-    if (child.charAt(0) === "/") {
+    if (child.charAt(0) === '/') {
         child = child.slice(1);
     }
-    if (child.charAt(0) !== ".") {
+    if (child.charAt(0) !== '.') {
         return child;
     }
-    var parts = child.split("/");
-    while (parts[0] === "." || parts[0] === "..") {
-        if (parts.shift() === "..") {
+    var parts = child.split('/');
+    while (parts[0] === '.' || parts[0] === '..') {
+        if (parts.shift() === '..') {
             parentBase.pop();
         }
     }
-    return parentBase.concat(parts).join("/");
+    return parentBase.concat(parts).join('/');
 }
 
 var seen = Object.create(null);
@@ -78,7 +82,7 @@ function load(name) {
             }
             var mod = internalRegistry[name];
             if (!mod) {
-                reject(new Error("Error loading module " + name));
+                reject(new Error('Error loading module ' + name));
                 return;
             }
             Promise.all(mod.deps.map(function (dep) {
@@ -123,7 +127,7 @@ var System = {
             values: values,
             // normalized deps
             deps: deps.map(function(dep) {
-                return normalizeName(dep, name.split("/").slice(0, -1));
+                return normalizeName(dep, name.split('/').slice(0, -1));
             }),
             // other modules that depends on this so we can push updates into those modules
             dependants: [],

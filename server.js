@@ -1,6 +1,6 @@
 /* jslint node: true */
 
-var path = require("path");
+var path = require('path');
 
 var seen = Object.create(null);
 var internalRegistry = Object.create(null);
@@ -35,7 +35,7 @@ exports.System = {
   import: function(name) {
     return new Promise(function (resolve, reject) {
       var mod = patchedRequire(path.resolve(name));
-      return mod ? resolve(mod) : reject(new Error("Could not find module " + name));
+      return mod ? resolve(mod) : reject(new Error('Could not find module ' + name));
     });
   },
   register: function(name, deps, wrapper) {
@@ -47,18 +47,18 @@ exports.System = {
       setters: null,
       proxy: Object.create(null),
       deps: deps.map(function(dep) {
-        if (dep.charAt(0) !== ".") {
+        if (dep.charAt(0) !== '.') {
           externalDeps.push(dep);
           return dep;
         }
-        var parts = dep.split("/"),
-          parentBase = name.split("/").slice(0, -1);
-        while (parts[0] === "." || parts[0] === "..") {
-          if (parts.shift() === "..") {
+        var parts = dep.split('/'),
+          parentBase = name.split('/').slice(0, -1);
+        while (parts[0] === '.' || parts[0] === '..') {
+          if (parts.shift() === '..') {
             parentBase.pop();
           }
         }
-        return parentBase.concat(parts).join("/");
+        return parentBase.concat(parts).join('/');
       }),
       externalDeps: externalDeps,
       // other modules that depends on this so we can push updates into those modules
@@ -76,9 +76,9 @@ exports.System = {
 
 
 var newEntry;
-var m = require("module");
-var Module = require("module").Module;
-var originalLoader = require("module")._load;
+var m = require('module');
+var Module = require('module').Module;
+var originalLoader = require('module')._load;
 
 // monkey patching `require()` during a brief period of time
 function patchedRequire(name) {
