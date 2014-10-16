@@ -1,6 +1,6 @@
 {
   "name": "es6-micro-loader",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Simplistic ES6 Module Loader for modules transpiled into System.register() format",
   "author": "Caridy Patino <caridy@gmail.com>",
   "homepage": "https://github.com/caridy/es6-micro-loader",
@@ -13,7 +13,10 @@
   ],
   "bugs": "https://github.com/caridy/es6-micro-loader/issues",
   "main": "index.js",
-  "files": ["index.js", "server.js"],
+  "files": [
+    "index.js",
+    "server.js"
+  ],
   "scripts": {
     "test": "npm run test-compile; ./node_modules/.bin/_mocha tests/unit/*.js --reporter spec",
     "test-compile": "cd tests/unit/src/; ../../../node_modules/.bin/compile-modules convert -f es6-module-transpiler-system-formatter **/*.js -o ../build",
@@ -33,8 +36,8 @@
     "grunt-contrib-uglify": "^0.5.1",
     "grunt-contrib-jshint": "^0.10.0",
     "benchmark": "^1.0.0",
-    "es6-module-transpiler": "^0.6.0",
-    "es6-module-transpiler-system-formatter": "^0.1.1",
+    "es6-module-transpiler": "~0.8.2",
+    "es6-module-transpiler-system-formatter": "~0.2.0",
     "chai": "*",
     "mocha": "*",
     "xunit-file": "*",
