@@ -1,6 +1,6 @@
 {
   "name": "es6-micro-loader",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Simplistic ES6 Module Loader for modules transpiled into System.register() format",
   "author": "Caridy Patino <caridy@gmail.com>",
   "homepage": "https://github.com/caridy/es6-micro-loader",
@@ -15,7 +15,8 @@
   "main": "index.js",
   "files": [
     "index.js",
-    "server.js"
+    "server.js",
+    "dist/"
   ],
   "scripts": {
     "test": "npm run test-compile; ./node_modules/.bin/_mocha tests/unit/*.js --reporter spec",
